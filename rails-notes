@@ -1,0 +1,544 @@
+$ rails new blog   ->  to create new blog (project)
+or
+$ rails new blog --skip-spring --skip-listen   ->to create new blog (it will skip some feature)
+
+$ rails server -> to start server
+
+$ rails generate controller Welcome index  -> it will create (app/controllers/welcome_controller.rb, route get 'welcome/index',  app/views/welcome, app/views/welcome/index.html.erb, test/controllers/welcome_controller_test.rb, app/helpers/welcome_helper.rb, app/assets/javascripts/welcome.coffee, app/assets/stylesheets/welcome.scss )
+
+
+
+
+* config/routes.rb -> file contains all information about routes 
+-----------------------------------------------------------------------------------------------------
+Rails.application.routes.draw do
+  get 'welcome/index' #set different get requests for application 
+  root 'welcome#index' #set first page for web app '127.0.0.1:3000' (welcome#index  -> welcome/index)
+end
+
+
+------------------------------------------------------------------------------------------------------------
+Rails provides a resources method which can be used to declare a standard REST resource. You need to add the article resource to the config/routes.rb so the file will look as follows:
+
+Rails.application.routes.draw do
+  get 'welcome/index' 
+  resources :articles  
+  root 'welcome#index'
+end
+
+
+$ rails generate controller Articles -> generate new controller name called articlea
+
+$ rails generate model Article title:string text:text -> create new model 
+
+
+$ rails db:migrate -> commit model in database
+
+
+
+
+CREATE
+-------
+user = User.create(name:"ved",age:90)
+
+	OR
+
+user = User.new
+user.name="ved"
+user.age=25
+user.save
+
+READ
+------
+# return a collection with all users
+users = User.all
+
+
+# return the first user
+user = User.first
+
+# return the first user named David
+david = User.find_by(name: 'David')
+
+
+# find all users named David who are Code Artists and sort by created_at in reverse chronological order
+users = User.where(name: 'David', occupation: 'Code Artist').order(created_at: :desc)
+
+
+UPDATE
+-------
+
+user = User.find_by(name: 'David')
+user.name = 'Dave'
+user.save
+
+user = User.find_by(name: 'David')
+user.update(name: 'Dave')
+
+
+User.update_all "max_login_attempts = 3, must_change_password = 'true'"
+
+
+
+DELETE
+--------
+
+user = User.find_by(name: 'David')
+user.destroy
+
+# find and delete all users named David
+User.destroy_by(name: 'David')
+ 
+# delete all users
+User.destroy_all
+
+
+
+
+
+
+
+
+
+
+
+Migrations support all the basic data types − The following is the list of data types that migration supports −
+
+string − for small data types such as a title.
+------
+
+text − for longer pieces of textual data, such as the description.
+----
+
+integer − for whole numbers.
+------
+
+float − for decimals.
+-----
+
+datetime and timestamp − store the date and time into a column.
+----------------------
+
+date and time − store either the date only or time only.
+-------------
+
+binary − for storing data such as images, audio, or movies.
+------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Writing a Migration
+---------------------------------
+
+rails generate migration AddNameToWorkers name:string
+
+
+Createing a Table
+-----------------
+create_table : products do |t|
+	t.string:name
+	t.integer:age
+end
+
+
+Creating a Join Table
+---------------------
+create_join_table :product, :categories
+
+	OR
+
+create_join_table :products, :categories, column_options:{null:true}
+
+	OR
+
+create_join_table :products, :categories, table_name: name_of_the_new_table
+
+	OR
+
+create_join_table :products, :categories do |t|
+	t.index :product_id
+	t.index :category_id
+end
+
+
+Changing Tables
+---------------
+change_table :products do |t|
+	t.remove :description, :name
+	t.string :part_number
+	t.index :part_number
+	t.rename :upcccode, :upc_code
+end
+
+
+Changing Column
+---------------
+change_column :products, :part_number, :text
+
+change_column_null :products, :name, false
+
+change_column_default :products, :approved, from: true, to: false
+
+
+
+Column Modifiers
+----------------
+Column modifiers can be applied when creating or changing a column:
+
+limit Sets the maximum size of the string/text/binary/integer fields.
+precision Defines the precision for the decimal fields, representing the total number of digits in the number.
+scale Defines the scale for the decimal fields, representing the number of digits after the decimal point.
+polymorphic Adds a type column for belongs_to associations.
+null Allows or disallows NULL values in the column.
+default Allows to set a default value on the column. Note that if you are using a dynamic value (such as a date), the default will only be calculated the first time (i.e. on the date the migration is applied).
+comment Adds a comment for the column.
+Some adapters may support additional options; see the adapter specific API docs for further information.
+
+
+Foreign Keys
+------------
+add_foreign_key :articles, :authers
+
+# let Active Record figure out the column name
+remove_foreign_key :accounts, :branches
+ 
+# remove foreign key for a specific column
+remove_foreign_key :accounts, column: :owner_id
+ 
+# remove foreign key by name
+remove_foreign_key :accounts, name: :special_fk_name
+
+
+
+
+
+Rolling Back
+------------
+rails db:rollback
+rails db:rollback STEP=3
+rails db:migrate:redo step=3
+
+Running Specific Migrations
+---------------------------
+rails db:migrate:up VERSION=20080906120000
+
+
+Running Migrations in Different Environments
+------------------------------------------
+rails db:migrate RAILS_ENV=test
+
+
+Changing the Output of Running Migrations
+-----------------------------------------
+
+
+
+
+
+
+ASSOCIATION
+_________________________________________________________
+
+
+The has_many Association
+------------------------
+
+class Auther < ApplicationRecord
+	has_many :books
+end
+
+
+class Book < ApplicationRecord
+	belongs_to :auther
+end
+
+
+
+The has_one Through Association
+---------------------------------
+
+class Supplier < ApplicationRecord
+  has_one :account
+  has_one :account_history, through: :account
+end
+ 
+class Account < ApplicationRecord
+  belongs_to :supplier
+  has_one :account_history
+end
+ 
+class AccountHistory < ApplicationRecord
+  belongs_to :account
+end
+
+
+
+
+
+
+
+
+
+
+
+The has_many Through Association
+-----------------------
+
+class Appointment < ApplicationRecord
+	belongs_to :physician
+	belongs_to :patient
+end
+
+class Patient < ApplicationRecord
+	has_many :appointments
+	has_many :physicians, :through => :appointments
+end
+
+class Physician < ApplicationRecord
+	has_many :appointments
+	has_many :patients, :through => :appointments
+end
+
+
+
+The has_and_belongs_to_many Association
+--------------------------------------
+
+class Assembly < ApplicationRecord
+  has_and_belongs_to_many :parts
+end
+ 
+class Part < ApplicationRecord
+  has_and_belongs_to_many :assemblies
+end
+
+
+
+Polymorphic Associations
+---------------------------
+class Product < ApplicationRecord
+	has_one :picture, :as => :imageable
+end
+
+class Employee < ApplicationRecord
+	has_one :picture, :as => :imageable
+end
+
+class Picture < ApplicationRecord
+	belongs_to :imageable, :polymorphic => true
+end
+
+
+
+
+
+
+
+Nested association
+-----------------------------------------------------------------------------------------------
+
+Author.create!(name: "ramkumar verma", books_attributes: [{name: "hansh raj"}])
+
+User.create!(name: "anubhav", user_roles_attributes: [{user_id:1, role_id:1}])
+
+User.create(name:"ajay", user_roles_attributes:[{role_id:1},{role_id:2}])
+
+#schema.rb
+ActiveRecord::Schema.define(version: 2020_01_31_054932) do
+
+  create_table "authors", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "books", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.integer "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+end
+
+
+
+
+
+
+#author.rb
+class Author < ApplicationRecord
+	has_many :books
+	accepts_nested_attributes_for :books
+end
+
+
+
+#book.rb
+class Book < ApplicationRecord
+	belongs_to :author, optional: true
+end
+
+
+
+
+complete controller
+------------------
+class BooksLogController < ApplicationController
+	def new
+		@author = Author.new
+		@author.books.build
+	end
+
+
+	def show
+		@book = Book.all
+	end
+
+
+	def create
+    	@author = Author.new(author_params)
+    	if @author.save
+      		redirect_to books_log_index_path
+    	else
+      		render 'new'
+    	end
+  	end
+
+
+  	private
+    	def author_params
+        	params.require(:author).permit(:name, books_attributes: [:id, :name])
+    	end
+end
+
+
+
+nested input form
+-----------------
+<%= form_for @author, url: books_log_index_path, local: true do |form| %>
+   
+    <%= form.label :name %>
+    <%= form.text_field :name%>
+
+
+    <%= form.fields_for :books do |nform| %>
+        <%= nform.label :name %>
+        <%= nform.text_field :name %>
+    <% end %>
+
+
+    <%=form.submit%>
+
+<% end %>
+
+
+
+
+
+nested dispaly
+--------------
+<tbody>
+<% @book.each do |book| %>
+    <tr>
+      <td><%= book.name %></td>
+      <td><%= book.author.name %></td>
+    </tr>
+
+  <% end %>
+</tbody>
+
+
+
+---------------------------------------------------
+rails db:migrate:status
+rails db:migrate:down VERSION=20200128063832
+
+
+
+
+
+
+----------------------------------------
+some specific rails console commands
+
+row.user_roles.create([{role_id:1},{role_id:2}])
+
+
+
+
+
+
+update
+update_all
+apdate_attributes
+
+
+active record hash vs ruby hash
+group by
+
+how to make scope in rails 
+default scope in rails
+
+
+
+N+1 query problem
+
+lagy loading
+eager loading
+
+
+JRuby
+CRuby
+
+
+
+
+left_outer_join
+
+includeds
+eagre load -> 
+preload  > only 
+
+
+
+User.includes.(:associ).where(coustomers:{role_id: 0})
+
+
+a.includes(a:[b:[:c]]
+
+include > eager loadi pre load
+
+
+
+
+
+when contoller class instatanciated
+
+
+
+redirect_to (301,302)
+
+
+auto_discovery
+
+development vs production
+
+
+_filename.html.erb
+
+
+

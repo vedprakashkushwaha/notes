@@ -1,0 +1,65 @@
+learnning
+
+lsof -wni tcp:3000
+kill -9 PID
+-----------------angular 9------------------------
+
+
+import { Component } from '@angular/core';
+import {FormsModule} from '.@angular/forms';
+import {AppComponent} from './app.componenet';
+@NgModule({declartions:[AppComponent], imports: [FormsModule],providers[],bootstrap: [AppComponent]})
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ 
+}
+
+
+
+------------------------------------------
+ng generate component servers
+
+--------test case commonds----------
+
+mysql -u root -p simmpli</home/shanu/Downloads/simmpli_images.sql
+
+
+
+rails generate rspec:install
+rails g rspec:model user
+
+RAILS_ENV=test rake db:create
+RAILS_ENV=test rake db:migrate
+
+rake sunspot:solr:stop
+rake sunspot:solr:start
+rake sunspot:solr:reindex
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

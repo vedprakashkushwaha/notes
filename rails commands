@@ -1,0 +1,80 @@
+row.user_roles.create([{role_id:1},{role_id:2}])
+
+<ActionController::Parameters {"name"=>"ved", "user_roles_attributes"=>["{:role_id=>1}", "{:role_id=>2}"]} permitted: false>
+
+User.create(name:"ajay", user_roles_attributes:[{role_id:1},{role_id:2}])
+
+
+		#@row.user_roles.create([{role_id: 1},{role_id: 2},{role_id: 3}])
+
+
+
+
+
+
+--------------------------------------------params format of nested forms ------------------------------
+<ActionController::Parameters {"name"=>"vinay", "books_attributes"=>{"0"=>{"name"=>"kumar"}}} permitted: false>
+{"name"=>"ajay", "user_roles_attributes"=>{"0"=>{"role_id"=>"1"}, "1"=>{"role_id"=>"2"}}}
+
+
+
+
+{"name"=>"ved", "user_roles_attributes"=>{"0"=>"{role_id:1}", "1"=>"{role_id:2}"}}
+
+{"name"=>"dwsd", "user_roles_attributes"=>{"1"=>"role_id:2", "2"=>"role_id:3"}}
+
+{"name"=>"vinay", "books_attributes"=>{"0"=>{"name"=>"kumar"}}}
+
+
+{"name"=>"navajish", "user_roles_attributes"=>{"0"=>["1"], "2"=>["3"]}}     -> now
+
+
+{"name"=>"ved", "user_roles_attributes"=>["1", "2"]}
+
+
+
+----------------correct format for console-------------------------------------
+User.create(name:"ajay", user_roles_attributes:[{role_id:1},{role_id:2}])
+
+--------------------------------------for dependent destroy-----------------------------
+User.last.update(name:"ajay", user_roles_attributes:[{role_id:3},{ _destroy:false, id:220}])
+
+User.last.update(name:"ajay", user_roles_attributes:[{role_id:3},{ _destroy:false, id:220}])
+
+------------------common gems-----------------------------
+devise 
+bcrypt
+jquery
+bootstrap
+pry
+
+will_peginate
+whenever
+friendlyid
+http
+
+
+
+-----------------test case commonds-------------------------
+bundle show spree_core    -> to show bundle location
+
+mysql -u root -p simmpli</home/shanu/Downloads/simmpli_images.sql
+
+rails generate rspec:install
+rails g rspec:model user
+
+RAILS_ENV=test rake db:create
+RAILS_ENV=test rake db:migrate
+
+rake sunspot:solr:run
+
+
+rake sunspot:solr:stop
+rake sunspot:solr:start
+rake sunspot:solr:reindex
+
+
+https://staging.roadreadywheels.com
+
+
+
